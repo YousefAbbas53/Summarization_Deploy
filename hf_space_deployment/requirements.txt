@@ -1,0 +1,12 @@
+fastapi>=0.100.0
+uvicorn>=0.23.0
+python-multipart>=0.0.6
+transformers>=4.33.0
+torch>=2.0.0
+pymupdf>=1.23.0
+pdf2image>=1.16.3
+pytesseract>=0.3.10
+Pillow>=10.0.0
+tqdm>=4.66.0
+sentencepiece>=0.1.99
+accelerate>=0.23.0

@@ -1,0 +1,10 @@
+__pycache__/
+*.pyc
+.env
+output/
+tmp/
+*.zip
+.ipynb_checkpoints/
+.git/
+.gitignore
+README.md
