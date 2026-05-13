@@ -49,9 +49,13 @@ class BookSummarizer:
         logger.info("Model loaded successfully.")
 
     def tok_len(self, s: str) -> int:
+        if not self.tokenizer:
+            self.load_model()
         return len(self.tokenizer.encode(s, add_special_tokens=False))
 
     def split_by_tokens(self, s: str, max_len: int, overlap_tokens: int = 64):
+        if not self.tokenizer:
+            self.load_model()
         ids = self.tokenizer.encode(s, add_special_tokens=False)
         if len(ids) <= max_len:
             return [s.strip()]
