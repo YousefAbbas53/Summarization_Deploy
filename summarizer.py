@@ -11,7 +11,7 @@ MODEL_NAME = "facebook/bart-large-cnn"
 BATCH_SIZE = 4
 NUM_BEAMS = 4
 NO_REPEAT_NGRAM_SIZE = 3
-EARLY_STOPPING = False
+EARLY_STOPPING = True
 
 # Chunking config
 MAX_INPUT_TOKENS = 1024

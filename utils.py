@@ -45,18 +45,32 @@ def ocr_pdf_page(pdf_path: str, page_number_1based: int, dpi: int = OCR_DPI, lan
     return pytesseract.image_to_string(img, lang=lang)
 
 def pdf_to_text_smart(pdf_path: str, native_min_chars_per_page: int = NATIVE_MIN_CHARS_PER_PAGE) -> str:
-    """Extracts text from PDF, falling back to OCR for scanned pages."""
+    """Extracts text from PDF, falling back to OCR for scanned pages.
+       Optimized to avoid OCR on native PDFs with sparse pages (like title pages)."""
     doc = fitz.open(str(pdf_path))
     parts = []
+    
+    # Quick check: is this likely a native PDF?
+    # Sample up to 10 pages to see if any has a good amount of native text.
+    is_native_pdf = False
+    sample_pages = min(10, doc.page_count)
+    for i in range(sample_pages):
+        page = doc.load_page(i)
+        native = (page.get_text("text") or "").strip()
+        if len(re.sub(r"\s+", "", native)) > 200:
+            is_native_pdf = True
+            break
 
     for i in range(doc.page_count):
         page = doc.load_page(i)
         native = (page.get_text("text") or "").strip()
         native_compact_len = len(re.sub(r"\s+", "", native))
 
-        if native_compact_len >= native_min_chars_per_page:
+        if native_compact_len >= native_min_chars_per_page or is_native_pdf:
+            # If we know it's a native PDF, even sparse pages (like titles/blank pages) don't need OCR
             parts.append(native)
         else:
+            # Only OCR if it's not a known native PDF and native text is sparse (could be a scanned page)
             ocr = ocr_pdf_page(pdf_path, page_number_1based=i+1)
             parts.append(ocr)
 
